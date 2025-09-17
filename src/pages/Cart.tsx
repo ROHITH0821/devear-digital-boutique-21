@@ -97,7 +97,7 @@ const Cart = () => {
                 <ScrollArea className="h-[600px] pr-4">
                   <div className="space-y-6">
                     {state.items.map((item) => (
-                  <div key={item.id} className="bg-card border border-border rounded-lg p-6">
+                  <div key={item.id} className="bg-card border border-border rounded-lg p-6 animate-cart-item-add transition-all-smooth hover:shadow-medium">
                     <div className="flex gap-4">
                       <img
                         src={item.image}

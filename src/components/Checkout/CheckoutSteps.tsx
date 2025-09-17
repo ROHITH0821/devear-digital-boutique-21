@@ -22,6 +22,7 @@ interface CheckoutStepsProps {
 
 const CheckoutSteps: React.FC<CheckoutStepsProps> = ({ onOrderComplete }) => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
   const [checkoutData, setCheckoutData] = useState<CheckoutData>({
     address: null,
     shipping: null,
@@ -73,6 +74,22 @@ const CheckoutSteps: React.FC<CheckoutStepsProps> = ({ onOrderComplete }) => {
     }
   };
 
+  const calculateFinalTotal = () => {
+    const subtotal = getCartTotal();
+    let total = subtotal + (checkoutData.shipping?.cost || 0);
+    
+    if (appliedCoupon) {
+      if (appliedCoupon.type === 'percentage') {
+        const discount = (subtotal * appliedCoupon.discount) / 100;
+        total = total - discount;
+      } else {
+        total = Math.max(0, total - appliedCoupon.discount);
+      }
+    }
+    
+    return total;
+  };
+
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
@@ -107,7 +124,9 @@ const CheckoutSteps: React.FC<CheckoutStepsProps> = ({ onOrderComplete }) => {
               nextStep();
             }}
             onBack={prevStep}
-            orderTotal={getCartTotal() + (checkoutData.shipping?.cost || 0)}
+            orderTotal={calculateFinalTotal()}
+            appliedCoupon={appliedCoupon}
+            onCouponApplied={setAppliedCoupon}
           />
         );
       case 4:
@@ -117,6 +136,8 @@ const CheckoutSteps: React.FC<CheckoutStepsProps> = ({ onOrderComplete }) => {
             cartItems={state.items}
             onBack={prevStep}
             onOrderComplete={onOrderComplete}
+            appliedCoupon={appliedCoupon}
+            finalTotal={calculateFinalTotal()}
           />
         );
       default:

@@ -18,7 +18,7 @@ const CartPreview = ({ isOpen, onClose }: CartPreviewProps) => {
   const itemCount = getCartCount();
 
   return (
-    <div className="absolute right-0 top-full mt-2 w-80 bg-card border border-border rounded-lg shadow-large z-50 animate-scale-in">
+    <div className="absolute right-0 top-full mt-2 w-80 bg-card border border-border rounded-lg shadow-large z-50 animate-scale-in transition-all-smooth">
       <div className="p-4">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-medium flex items-center gap-2">

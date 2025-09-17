@@ -1,4 +1,5 @@
 import { X, Plus, Minus, ShoppingBag, Truck, Heart, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Progress } from '@/components/ui/progress';
@@ -89,7 +90,7 @@ const CartDrawer = () => {
           ) : (
             <>
               {state.items.map((item) => (
-                <div key={item.id} className="flex gap-4 p-4 border rounded-lg">
+                <div key={item.id} className="flex gap-4 p-4 border rounded-lg animate-cart-item-add transition-all-smooth hover:shadow-medium">
                   <img
                     src={item.image}
                     alt={item.name}
@@ -228,10 +229,12 @@ const CartDrawer = () => {
               </div>
 
               <div className="space-y-2">
-                <Button className="w-full" size="lg">
-                  Checkout
-                  <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
+                <Link to="/checkout" onClick={toggleCart}>
+                  <Button className="w-full" size="lg">
+                    Checkout
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </Button>
+                </Link>
                 <Button variant="outline" className="w-full" onClick={toggleCart}>
                   Continue Shopping
                 </Button>

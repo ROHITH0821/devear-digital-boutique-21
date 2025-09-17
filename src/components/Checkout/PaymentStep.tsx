@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
+import CouponSystem from '@/components/Coupons/CouponSystem';
 
 const cardSchema = z.object({
   cardNumber: z.string().min(16, 'Card number must be 16 digits'),
@@ -24,13 +25,17 @@ interface PaymentStepProps {
   onNext: (data: any) => void;
   onBack: () => void;
   orderTotal: number;
+  appliedCoupon?: any;
+  onCouponApplied?: (coupon: any) => void;
 }
 
 const PaymentStep: React.FC<PaymentStepProps> = ({ 
   initialData, 
   onNext, 
   onBack, 
-  orderTotal 
+  orderTotal,
+  appliedCoupon,
+  onCouponApplied
 }) => {
   const [paymentMethod, setPaymentMethod] = useState(initialData?.method || 'card');
 
@@ -124,6 +129,21 @@ const PaymentStep: React.FC<PaymentStepProps> = ({
             ))}
           </RadioGroup>
         </div>
+
+        <Separator />
+
+        {/* Coupon System */}
+        {onCouponApplied && (
+          <div>
+            <Label className="text-base font-medium">Apply Coupon</Label>
+            <div className="mt-3">
+              <CouponSystem 
+                onCouponApplied={onCouponApplied}
+                appliedCoupon={appliedCoupon}
+              />
+            </div>
+          </div>
+        )}
 
         <Separator />
 

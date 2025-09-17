@@ -12,13 +12,17 @@ interface ReviewStepProps {
   cartItems: any[];
   onBack: () => void;
   onOrderComplete: (orderData: any) => void;
+  appliedCoupon?: any;
+  finalTotal?: number;
 }
 
 const ReviewStep: React.FC<ReviewStepProps> = ({ 
   checkoutData, 
   cartItems, 
   onBack,
-  onOrderComplete 
+  onOrderComplete,
+  appliedCoupon,
+  finalTotal
 }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const { clearCart } = useCart();
@@ -31,7 +35,12 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
   const subtotal = calculateSubtotal();
   const shippingCost = checkoutData.shipping?.cost || 0;
   const tax = subtotal * 0.08; // 8% tax
-  const total = subtotal + shippingCost + tax;
+  const discount = appliedCoupon 
+    ? (appliedCoupon.type === 'percentage' 
+       ? (subtotal * appliedCoupon.discount) / 100
+       : appliedCoupon.discount)
+    : 0;
+  const total = finalTotal || (subtotal + shippingCost + tax - discount);
 
   const generateOrderId = () => {
     return 'ORD-' + Date.now().toString(36).toUpperCase();
@@ -53,6 +62,8 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
         subtotal,
         shipping: shippingCost,
         tax,
+        discount,
+        appliedCoupon,
         total,
         address: checkoutData.address,
         shippingMethod: checkoutData.shipping,
@@ -203,6 +214,12 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
                 <span>Shipping</span>
                 <span>{shippingCost === 0 ? 'FREE' : `$${shippingCost.toFixed(2)}`}</span>
               </div>
+              {appliedCoupon && (
+                <div className="flex justify-between text-sm text-green-600">
+                  <span>Discount ({appliedCoupon.code})</span>
+                  <span>-${discount.toFixed(2)}</span>
+                </div>
+              )}
               <div className="flex justify-between text-sm">
                 <span>Tax</span>
                 <span>${tax.toFixed(2)}</span>
