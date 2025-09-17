@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ShoppingBag, Search, Menu, X, Heart, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
@@ -23,7 +23,8 @@ const Header = () => {
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   
-  const { getCartCount, toggleCart } = useCart();
+  const navigate = useNavigate();
+  const { getCartCount } = useCart();
   const { getWishlistCount } = useWishlist();
   const { state: userState, logout } = useUser();
   
@@ -130,7 +131,7 @@ const Header = () => {
                 variant="ghost" 
                 size="icon" 
                 className="relative" 
-                onClick={toggleCart}
+                onClick={() => navigate('/cart')}
                 onMouseEnter={() => setShowCartPreview(true)}
                 onMouseLeave={() => setShowCartPreview(false)}
               >
@@ -229,8 +230,6 @@ const Header = () => {
             </div>
           </div>
         )}
-        
-        <CartDrawer />
         <div className="relative">
           <CartPreview isOpen={showCartPreview} onClose={() => setShowCartPreview(false)} />
         </div>
